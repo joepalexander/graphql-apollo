@@ -1,19 +1,19 @@
-require('dotenv').config();
-const express = require('express');
-const { graphqlHTTP } = require('express-graphql');
-const cors = require('cors');
-const schema = require('./schema');
+require("dotenv").config();
+const express = require("express");
+const { graphqlHTTP } = require("express-graphql");
+const cors = require("cors");
+const schema = require("./schema");
 
-const bdInFuture = [
+const dbInFuture = [
   {
     id: 1,
-    username: 'Andrew',
+    username: "Andrew",
     age: 27,
     posts: [
       {
         id: 100,
-        title: 'Hello',
-        content: 'Text Post',
+        title: "Hello",
+        content: "Text Post",
       },
     ],
   },
@@ -23,15 +23,25 @@ const app = express();
 app.use(cors());
 
 const root = {
-  getAllUsers: () => bdInFuture,
+  getAllUsers: () => dbInFuture,
   getUser: ({ id }) => {
-    bdInFuture.find((user) => user.id === id);
+    dbInFuture.find((user) => user.id === id);
+  },
+  createUser: ({ input }) => {
+    const user = {
+      id: Date.now(),
+      username: input.username,
+      age: input.age,
+    };
+    dbInFuture.push(user);
+    return user;
   },
 };
 app.use(
-  '/graphql',
+  "/graphql",
   graphqlHTTP({
     schema,
+    rootValue: root,
     graphiql: true,
   })
 );
