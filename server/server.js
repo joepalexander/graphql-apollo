@@ -22,6 +22,12 @@ const bdInFuture = [
 const app = express();
 app.use(cors());
 
+const root = {
+  getAllUsers: () => bdInFuture,
+  getUser: ({ id }) => {
+    bdInFuture.find((user) => user.id === id);
+  },
+};
 app.use(
   '/graphql',
   graphqlHTTP({
